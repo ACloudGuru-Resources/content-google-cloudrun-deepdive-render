@@ -1,5 +1,6 @@
 from flask import send_file
 from subprocess import call
+from google.cloud import storage
 
 def render(request):
     location = '/tmp/renders/'
@@ -15,5 +16,13 @@ def render(request):
     blender_expression = "import bpy; bpy.data.objects['Text'].data.body = '%s'" % message
     # Render 3D image
     call('blender -b %s --python-expr "%s" -o %s%s -f 1' % (blender_file, blender_expression, location, suffix), shell=True)
-    
-    return send_file(filename, mimetype='image/png')
+
+    # upload file to GCS
+    client = storage.Client()
+    bucket = client.get_bucket('acg-cloudrun-renders')
+    blobname = message + '-' + scene + '.png'
+    blob = bucket.blob(blobname)
+    blob.upload_from_filename(filename)
+
+    #returns a public url
+    return blob.public_url
