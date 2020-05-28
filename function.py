@@ -1,4 +1,3 @@
-from flask import send_file
 from subprocess import call
 from google.cloud import storage
 
@@ -8,9 +7,7 @@ def render(request):
     filename = location + suffix + '0001.png'
     
     message = request.args.get('text', default = 'HELLO', type = str)
-    
-    scene = request.args.get('scene', default = 'basic', type = str)
-    blender_file = "models/%s.blend" % scene
+    blender_file = "models/outrun.blend"
 
     # This script changes the text, it is run inside our 3D software. 
     blender_expression = "import bpy; bpy.data.objects['Text'].data.body = '%s'" % message
@@ -20,7 +17,7 @@ def render(request):
     # upload file to GCS
     client = storage.Client()
     bucket = client.get_bucket('acg-cloudrun-renders')
-    blobname = message + '-' + scene + '.png'
+    blobname = message + '.png'
     blob = bucket.blob(blobname)
     blob.upload_from_filename(filename)
 
