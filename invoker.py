@@ -10,7 +10,7 @@ from subprocess import call
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['POST'])
 def invoke():
 	return function.render(request)
 
