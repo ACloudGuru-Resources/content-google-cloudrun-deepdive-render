@@ -32,7 +32,7 @@ def render(request):
 
     # upload file to GCS
     client = storage.Client()
-    bucket = client.get_bucket('acg-cloudrun-renders')
+    bucket = client.get_bucket('<YOUR-GCS-BUCKET>')
     blobname = text + '.png'
     blob = bucket.blob(blobname)
     blob.upload_from_filename(filename)
