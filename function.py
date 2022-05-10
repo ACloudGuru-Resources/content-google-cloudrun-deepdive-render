@@ -28,7 +28,7 @@ def render(request):
     # This script changes the text, it is run inside our 3D software. 
     blender_expression = "import bpy; bpy.data.objects['Text'].data.body = '%s'" % text
     # Render 3D image
-    call('blender -b %s --python-expr "%s" -o %s%s -f 1' % (blender_file, blender_expression, location, suffix), shell=True)
+    call('blender -b %s --python-expr "%s" -o %s%s --engine CYCLES -f 1' % (blender_file, blender_expression, location, suffix), shell=True)
 
     # upload file to GCS
     client = storage.Client()
